@@ -20,3 +20,17 @@ ENV CAML_LD_LIBRARY_PATH=/root/.opam/${OCAML_VERSION}/lib/stublibs:/root/.opam/$
 ENV OCAML_TOPLEVEL_PATH=/root/.opam/${OCAML_VERSION}/lib/toplevel
 ENV MANPATH=:/root/.opam/${OCAML_VERSION}/man
 ENV PATH=/root/.opam/${OCAML_VERSION}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    lsb-release \
+    wget \
+    software-properties-common \
+    gnupg \
+    cmake
+
+RUN wget -O - https://apt.llvm.org/llvm.sh > llvm.sh
+RUN sed 's/CURRENT_LLVM_STABLE=15/CURRENT_LLVM_STABLE=14/' llvm.sh > llvm-14.sh
+RUN chmod +x llvm-14.sh
+RUN ./llvm-14.sh
+RUN opam install -y llvm
+RUN opam install -y dune
